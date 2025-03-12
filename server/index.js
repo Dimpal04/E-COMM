@@ -3,9 +3,13 @@ const app = express()
 const cors = require('cors')
 require('./db/db.js')
 require('dotenv').config();
-const multer= require('multer')
+const multer = require('multer')
 const path = require('path')
-app.use(express.json())
+var bodyParser = require('body-parser')
+// app.use(express.json())
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+
 app.use(cors())
 
 
@@ -16,34 +20,34 @@ const subcategory = require('./controller/subcategory.controller.js')
 const color = require('./controller/color.controller.js')
 const size = require('./controller/size.controller.js')
 const contact = require('./controller/contact.controller.js')
-const {Token}=require('./Middleware/userToken.js')
+const { Token } = require('./Middleware/userToken.js')
 // const{validateUserData }=require('./Middleware/validation.js')
-const review=require('./controller/review.controller.js')
+const review = require('./controller/review.controller.js')
 const admin = require('./controller/admin.controller.js')
 const address = require('./controller/address.controller.js')
-const {connection } = require('./db/db.js');
+const { connection } = require('./db/db.js');
 connection()
 
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
+  destination: function (req, file, cb) {
 
-      cb(null, path.join(__dirname,'./Images'),function(error){
-if(error){
-    throw error
-}
-      })
-    },
-    filename: function (req, file, cb) {
-      const name = Date.now() + '-' + file.originalname
-      cb(null, name,function(error){
-        if(error){
-            throw error
-        }
-      })
-    }
-  })
-  
-  const upload = multer({ storage: storage})
+    cb(null, path.join(__dirname, './Images'), function (error) {
+      if (error) {
+        throw error
+      }
+    })
+  },
+  filename: function (req, file, cb) {
+    const name = Date.now() + '-' + file.originalname
+    cb(null, name, function (error) {
+      if (error) {
+        throw error
+      }
+    })
+  }
+})
+
+const upload = multer({ storage: storage })
 
 
 // register API
@@ -62,24 +66,24 @@ app.delete('/deleteData/:_id', user.deleteData)
 // send otp notification api
 app.post('/sendOtp', user.sendOtp)
 // match otp api
-app.post('/matchOtp',user.matchOtp)
+app.post('/matchOtp', user.matchOtp)
 // update password
-app.post('/updatePassword',user.newPassword)
+app.post('/updatePassword', user.newPassword)
 
 
 // product get data API
-app.get('/getProduct',product.getProduct)
+app.get('/getProduct', product.getProduct)
 // product insert data API
-app.post('/addProduct',Token,product.addProduct)
+app.post('/addProduct', upload.array('img'), product.addProduct)
 // product update data  API
-app.put('/updateProduct/:_id',product.updateProduct)
+app.put('/updateProduct/:_id', product.updateProduct)
 // product delete data API
 app.delete('/deleteProduct/:_id', product.deleteProduct)
 
 // product search
-app.get('/getSearchProduct',product.searchProduct)
+app.get('/getSearchProduct', product.searchProduct)
 // price filter
-app.get('/priceFilter',product.productPrice)
+app.get('/priceFilter', product.productPrice)
 
 // category get data API
 app.get('/getCategory', category.getCategory)
@@ -116,8 +120,8 @@ app.delete('/deleteContact/:_id', contact.deleteContact)
 
 // review get data API
 app.get('/getReview', review.getReview)
- // review get one data API
- app.get('/getOneReview/:_id',review.getOneReview)
+// review get one data API
+app.get('/getOneReview/:_id', review.getOneReview)
 // review insert data API
 app.post('/addReview', review.addReview)
 // review update data API
@@ -126,29 +130,29 @@ app.put('/updateReview/:_id', review.updateReview)
 app.delete('/deleteReview/:_id', review.deleteReview)
 
 // admin get data API
- app.get('/getAdmin', admin.getAdminData)
- // admin add data API
- app.post('/addAdmin',Token,admin.addAdmin)
- // admin update data API
- app.put('/updateAdmin/:_id', admin.updateAdmin)
- // admin delete data API
- app.delete('/deleteAdmin/:_id', admin.deleteAdmin)
- // admin login API
- app.post('/adminLogin', admin.adminLogin)
+app.get('/getAdmin', admin.getAdminData)
+// admin add data API
+app.post('/addAdmin', Token, admin.addAdmin)
+// admin update data API
+app.put('/updateAdmin/:_id', admin.updateAdmin)
+// admin delete data API
+app.delete('/deleteAdmin/:_id', admin.deleteAdmin)
+// admin login API
+app.post('/adminLogin', admin.adminLogin)
 
 
 // address get data API
- app.get('/getAddress', address.getAddress)
- // address get one data API
- app.get('/getOneAddress/:_id', address.getOneAddress)
- // address insert data API
- app.post('/addAddress', address.addAddress)
- // address update data API
- app.put('/updateAddress/:_id', address.updateAddress)
- // address delete data API
- app.delete('/deleteAddress/:_id', address.deleteAddress)
+app.get('/getAddress', address.getAddress)
+// address get one data API
+app.get('/getOneAddress/:_id', address.getOneAddress)
+// address insert data API
+app.post('/addAddress', address.addAddress)
+// address update data API
+app.put('/updateAddress/:_id', address.updateAddress)
+// address delete data API
+app.delete('/deleteAddress/:_id', address.deleteAddress)
 
- 
+
 
 
 app.listen(process.env.PORT, () => console.log("Server is running on port 5000"));

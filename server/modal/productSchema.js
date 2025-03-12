@@ -4,9 +4,6 @@ const productSchema = {
     p_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'product',
-     
-       
-
     },
     p_name: {
         type: String,
@@ -52,15 +49,15 @@ const productSchema = {
         required: true,
         trim: true
     },
-    user_id:{
+    user_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user',
         required: true,
         trim: true
     },
-    img:{
-        type:Array,
-        require:true
+    img: {
+        type: Array,
+        require: true
     }
 }
 
